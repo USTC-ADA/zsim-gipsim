@@ -1,0 +1,68 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG UID
+ARG UNAME
+ARG GID
+ARG GNAME
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gfortran \
+    scons \
+    wget \
+    curl \
+    git \
+    unzip \
+    tar \
+    pkg-config \
+    cmake \
+    python3 \
+    python3-pip \
+    m4 \
+    autotools-dev \
+    automake \
+    gettext \
+    libx11-dev \
+    libxext-dev \
+    xorg-dev \
+    texinfo \
+    freeglut3-dev \
+    libtool \
+    libtool-bin \
+    autoconf \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    libconfig++-dev \
+    libhdf5-dev \
+    libelf-dev \
+    zlib1g-dev \
+    libc6-dev-i386 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/include/hdf5/serial/* /usr/include/
+
+RUN ln -s /usr/lib/x86_64-linux-gnu/hdf5/serial/libhdf5.so /usr/lib/x86_64-linux-gnu/libhdf5.so \
+    && ln -s /usr/lib/x86_64-linux-gnu/hdf5/serial/libhdf5_hl.so /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
+
+ENV PIN_ROOT=/opt/pin
+RUN wget -q https://software.intel.com/sites/landingpage/pintool/downloads/pin-2.14-71313-gcc.4.4.7-linux.tar.gz \
+    && tar -xzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz \
+    && mv pin-2.14-71313-gcc.4.4.7-linux ${PIN_ROOT} \
+    && chmod -R 777 ${PIN_ROOT} \
+    && rm pin-2.14-71313-gcc.4.4.7-linux.tar.gz
+
+ENV PINPATH=${PIN_ROOT}
+ENV PATH=${PIN_ROOT}:$PATH
+
+RUN apt update && apt install -y sudo
+
+RUN groupadd -g ${GID} ${GNAME} \
+ && useradd -m -u ${UID} -g ${GID} -s /bin/bash ${UNAME}
+RUN usermod -aG sudo ${UNAME}
+RUN echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${UNAME} \
+ && chmod 0440 /etc/sudoers.d/${UNAME}
+
+USER ${UNAME}
