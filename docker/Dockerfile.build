@@ -57,6 +57,10 @@ RUN wget -q https://software.intel.com/sites/landingpage/pintool/downloads/pin-2
 ENV PINPATH=${PIN_ROOT}
 ENV PATH=${PIN_ROOT}:$PATH
 
+RUN apt-get update && apt-get install -y \
+    time \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN apt update && apt install -y sudo
 
 RUN groupadd -g ${GID} ${GNAME} \
