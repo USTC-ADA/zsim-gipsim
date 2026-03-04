@@ -139,6 +139,7 @@ class PrintExpr {
     log_unlock(); \
 }
 
+/*
 #define info(args...) \
 { \
     log_lock(); \
@@ -148,6 +149,12 @@ class PrintExpr {
     fflush(logFdOut); \
     log_unlock(); \
 }
+*/
+
+template<typename... Args>
+inline void info_ignore(Args&&...) {}
+
+#define info(...) do { info_ignore(__VA_ARGS__); } while(0)
 
 /* I would call these macros log, but there's this useless math function
  * that happens to conflict with this...
