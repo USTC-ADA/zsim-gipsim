@@ -711,6 +711,20 @@ void DDRMemory::initTech(const char* techName) {
         tWR = 8;
         tRFC = 59;
         tREFI = 4160;
+    } else if (tech == "DDR3-1600-CL11") {
+        tCK = 1.25;
+        tBL = 4;
+        tCL = 11;
+        tRCD = 11;
+        tRTP = 6;
+        tRP = 11;
+        tRRD = 4;
+        tRAS = 28;
+        tFAW = 23;
+        tWTR = 6;
+        tWR = 12;
+        tRFC = 208;
+        tREFI = 6240;
     } else {
         panic("Unknown technology %s, you'll need to define it", techName);
     }
